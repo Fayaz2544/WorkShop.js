@@ -13,7 +13,34 @@ const { decode } = require('jsonwebtoken');
 
 router.get('/', verfyToken, async function (req, res, next) {
   try {
+    // ดึงข้อมูลสินค้าทั้งหมด
     let products = await productModel.find();
+
+    // สร้างอาร์เรย์เพื่อเก็บ ID ของสินค้าทั้งหมด
+    const productIds = products.map(product => product._id);
+
+    // คำนวณจำนวน order สำหรับแต่ละสินค้า
+    const orders = await orderSchema.aggregate([
+      {
+        $match: { productId: { $in: productIds } }
+      },
+      {
+        $group: {
+          _id: "$productId",
+          totalOrders: { $sum: 1 }
+        }
+      }
+    ]);
+
+    // ปรับปรุงจำนวน amount ในสินค้าตามจำนวน order ที่มี
+    products.forEach(product => {
+      const matchingOrder = orders.find(order => order._id.equals(product._id));
+      if (matchingOrder) {
+        product.amount -= matchingOrder.totalOrders;
+      }
+    });
+
+    // ส่งข้อมูลสินค้ากลับ
     return res.status(200).send({
       data: products,
       message: "สำเร็จ",
@@ -23,13 +50,13 @@ router.get('/', verfyToken, async function (req, res, next) {
     return res.status(500).send({
       message: "server error",
       success: false,
-    })
+    });
   }
-})
+});
 
 router.post('/', verfyToken, async function (req, res, next) {
   try {
-    const { products_name, price, amount} = req.body;
+    const { products_name, price, amount } = req.body;
     let newProduct = new productModel({
       products_name: products_name,
       price: price,
@@ -66,7 +93,7 @@ router.put("/:id", verfyToken, async function (req, res, next) {
       success: false,
       error: error.toString()
     });
-  }  
+  }
 });
 
 router.delete("/:id", verfyToken, async function (req, res, next) {
@@ -160,12 +187,12 @@ router.post('/:id/orders', verfyToken, async function (req, res, next) {
     }
 
     console.log(req.auth)
-    
+
     const order = new orderSchema({
       productId: productId,
       loginId: loginId
     });
-    
+
 
     await order.save();
 
