@@ -37,6 +37,7 @@ router.post("/", async function (req, res, next) {
     }
 })
 
+/*----- ไว้สำหรับการ เช็ค token -----*/
 router.get("/", verfyToken, async function (req, res, next) {
     try {
         const shop = await shopModel.find();

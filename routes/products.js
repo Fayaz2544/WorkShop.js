@@ -140,18 +140,18 @@ router.get('/:id/orders', verfyToken, async function (req, res, next) {
 
 router.post('/:id/orders', verfyToken, async function (req, res, next) {
   try {
-    const productId = req.params.id; // Extract the product ID from the request parameters
-    const product = await productSchema.findById(productId); // Find the product by its ID
+    const productId = req.params.id;
+    const product = await productSchema.findById(productId);
     const loginId = req.auth;
 
-    if (!product) { // If the product is not found, return a 404 error
+    if (!product) {
       return res.status(404).send({
         message: "ไม่พบสินค้า",
         success: false
       });
     }
 
-    // Check if adding this order exceeds the product's amount
+    // เช็คว่า จำนวน product : amount มีจำนวนเท่าไหร่ และสั่งสินค้าได้เท่าที่มี
     if (product.orders.length >= product.amount) {
       return res.status(400).send({
         message: "สินค้าเกินจำนวน ไม่สามารถสั่งเพิ่มได้",
@@ -161,28 +161,24 @@ router.post('/:id/orders', verfyToken, async function (req, res, next) {
 
     console.log(req.auth)
     
-    // Create a new order document
     const order = new orderSchema({
       productId: productId,
       loginId: loginId
     });
     
 
-    // Save the order document to the database
     await order.save();
 
-    // Add the order ID to the product's orders array
+    // เพิ่มรหัสคำสั่งซื้อลงในอาร์เรย์คำสั่งซื้อของผลิตภัณฑ์
     product.orders.push(order._id);
     await product.save();
 
-    // Return a success message
     return res.status(200).send({
       data: order,
       message: "เพิ่มคำสั่งซื้อลงในผลิตภัณฑ์เรียบร้อยแล้ว",
       success: true,
     });
   } catch (error) {
-    // If an error occurs during the process, return a 500 server error
     return res.status(500).send({
       message: "Server error",
       success: false,

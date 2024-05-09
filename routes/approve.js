@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
+/** admin เท่านั้น ที่จะสามารถ Approve หรือ อนุมัติได้ **/
+
 const shopSchema = require('../models/shop');
 const verfyToken = require('../middleware/auth.sh.middleware')
-
 
 router.put("/:id", verfyToken, async function (req, res, next) {
   try {

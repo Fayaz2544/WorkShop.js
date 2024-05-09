@@ -2,7 +2,6 @@ var express = require('express');
 const { Model, default: mongoose } = require('mongoose');
 var router = express.Router();
 
-// const productModel = require('../models/product');
 const orderSchema = require('../models/order');
 const verfyToken = require('../middleware/auth.sh.middleware');
 
