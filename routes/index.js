@@ -37,10 +37,10 @@ router.post("/login", async function (req, res, next) {
     // เงื่อนไขสำหรับบทบาท "admin"
     if (role === "admin") {
       // สร้าง token สำหรับ admin โดยมีสิทธิ์ "approve"
-      const { _id, firstName, lastName, email , status} = shop;
-      const token = jwt.sign({ _id, firstName, lastName, email, role, status }, process.env.JWT_KEY);
+      const { _id, firstName, lastName, email } = shop;
+      const token = jwt.sign({ _id, firstName, lastName, email, role, approve: true }, process.env.JWT_KEY);
       return res.status(201).send({
-        data: { _id, firstName, lastName, email, role, status, token },
+        data: { _id, firstName, lastName, email, role, approve: true, token },
         message: "เข้าสู่ระบบสำเร็จ",
         success: true,
       });
