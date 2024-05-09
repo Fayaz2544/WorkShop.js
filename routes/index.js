@@ -34,7 +34,7 @@ router.post("/login", async function (req, res, next) {
     // ตรวจสอบบทบาทของผู้ใช้
     let role = shop.role;
 
-    // เงื่อนไขสำหรับบทบาท "admin"
+    // เงื่อนไข "admin"
     if (role === "admin") {
       // สร้าง token สำหรับ admin โดยมีสิทธิ์ "approve"
       const { _id, firstName, lastName, email } = shop;
@@ -46,9 +46,9 @@ router.post("/login", async function (req, res, next) {
       });
     }
 
-    // เงื่อนไขสำหรับบทบาท "customer"
+    // เงื่อนไข "customer"
     if (role === "customer") {
-      // ตรวจสอบสถานะของลูกค้า
+      // ตรวจสอบสถานะ
       if (shop.status !== "approve") {
         return res.status(403).send({
           message: "รอการอนุมัติ",
@@ -66,7 +66,7 @@ router.post("/login", async function (req, res, next) {
       });
     }
 
-    // ถ้าไม่ใช่ admin หรือ customer ให้ส่งคำตอบ login fail
+    // ถ้าไม่ใช่ admin หรือ customer
     return res.status(500).send({
       message: "ไม่สามารถเข้าสู่ระบบได้",
       success: false,

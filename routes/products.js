@@ -9,6 +9,7 @@ const shopSchema = require('../models/shop');
 const verfyToken = require('../middleware/auth.sh.middleware');
 const { decode } = require('jsonwebtoken');
 
+/***- ใช้ Token ในการใช้งานทุกครั้งและทุกขั้นตอน -***/
 
 router.get('/', verfyToken, async function (req, res, next) {
   try {
