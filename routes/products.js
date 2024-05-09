@@ -10,7 +10,7 @@ const verfyToken = require('../middleware/auth.sh.middleware');
 const { decode } = require('jsonwebtoken');
 
 
-router.get('/', async function (req, res, next) {
+router.get('/', verfyToken, async function (req, res, next) {
   try {
     let products = await productModel.find();
     return res.status(200).send({
@@ -26,7 +26,7 @@ router.get('/', async function (req, res, next) {
   }
 })
 
-router.post('/', async function (req, res, next) {
+router.post('/', verfyToken, async function (req, res, next) {
   try {
     const { products_name, price, amount} = req.body;
     let newProduct = new productModel({
@@ -48,7 +48,7 @@ router.post('/', async function (req, res, next) {
   }
 })
 
-router.put("/:id", async function (req, res, next) {
+router.put("/:id", verfyToken, async function (req, res, next) {
   try {
 
     let { products_name, price, amount, order } = req.body;
@@ -68,7 +68,7 @@ router.put("/:id", async function (req, res, next) {
   }  
 });
 
-router.delete("/:id", async function (req, res, next) {
+router.delete("/:id", verfyToken, async function (req, res, next) {
   try {
     let delete_user = await productSchema.findByIdAndDelete(req.params.id);
     return res.status(200).send({
@@ -84,7 +84,7 @@ router.delete("/:id", async function (req, res, next) {
   }
 })
 
-router.get('/:id', async function (req, res, next) {
+router.get('/:id', verfyToken, async function (req, res, next) {
   try {
     const productId = req.params.id;
     const product = await productSchema.findById(productId);
@@ -107,7 +107,7 @@ router.get('/:id', async function (req, res, next) {
   }
 });
 
-router.get('/:id/orders', async function (req, res, next) {
+router.get('/:id/orders', verfyToken, async function (req, res, next) {
   try {
     const productId = req.params.id; // รับ Product ID จากพารามิเตอร์ของคำขอ
     const foundProduct = await productSchema.findById(productId); // ค้นหาสินค้าโดยใช้ ID
