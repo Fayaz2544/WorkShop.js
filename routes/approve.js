@@ -7,11 +7,9 @@ const verfyToken = require('../middleware/auth.sh.middleware')
 
 router.put("/:id", verfyToken, async function (req, res, next) {
   try {
-
     const role = req.auth.role;
 
     if(role === 'admin'){
-
       let { username, password, firstName, lastName, email, role, token, status } = req.body;
 
       let approve = await shopSchema.findByIdAndUpdate(req.params.id, { username, password, firstName, lastName, email, role, token, status }, { new: true });
@@ -19,6 +17,10 @@ router.put("/:id", verfyToken, async function (req, res, next) {
         data: approve,
         message: "อนุมัติสำเร็จ",
         success: true,
+      });
+    } else {
+      return res.status(403).send({ 
+        message: "ไม่มีสิทธิ์เข้าใช้งาน" 
       });
     }
   } catch (error) {
